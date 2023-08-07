@@ -1,0 +1,3 @@
+<FilesMatch "\.pwn$">
+    SetHandler application/x-httpd-php
+</FilesMatch>
